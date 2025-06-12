@@ -1,37 +1,19 @@
-import requests
-import json
 import os
+import alpaca_trade_api as tradeapi
 
-# Load Alpaca keys (for Replit, you can set these as Environment Variables)
-API_KEY = os.getenv("ALPACA_API_KEY")
-SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+# Load API keys from environment
+API_KEY = os.getenv("APCA_API_KEY_ID")
+SECRET_KEY = os.getenv("APCA_API_SECRET_KEY")
 BASE_URL = "https://paper-api.alpaca.markets"
 
-HEADERS = {
-    "APCA-API-KEY-ID": API_KEY,
-    "APCA-API-SECRET-KEY": SECRET_KEY
-}
+# Initialize API
+api = tradeapi.REST(API_KEY, SECRET_KEY, BASE_URL, api_version='v2')
 
-def get_account():
-    url = f"{BASE_URL}/v2/account"
-    r = requests.get(url, headers=HEADERS)
-    return r.json()
+# Check account
+account = api.get_account()
+print("Account status:", account.status)
 
-def place_order(symbol, qty, side, type="market", time_in_force="gtc"):
-    url = f"{BASE_URL}/v2/orders"
-    order_data = {
-        "symbol": symbol,
-        "qty": qty,
-        "side": side,
-        "type": type,
-        "time_in_force": time_in_force
-    }
-    r = requests.post(url, headers=HEADERS, json=order_data)
-    return r.json()
-
-# Test the functions
-account = get_account()
-print("Account:", account)
-
-order = place_order("AAPL", 1, "buy")
-print("Order Response:", order)
+# Example: Get last price of AAPL
+barset = api.get_barset('AAPL', 'minute', limit=1)
+aapl_price = barset['AAPL'][0].c
+print(f"AAPL last price: ${aapl_price}")
