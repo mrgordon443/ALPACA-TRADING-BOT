@@ -130,3 +130,7 @@ def rsi(prices, period=14):
     
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
+    print(f"RSI: {rsi}, SMA 20: {sma_20}, SMA 50: {sma_50}")
+print("Buy conditions met")  # Right before placing buy
+print("Sell conditions met")  # Right before placing sell
+
